@@ -4,6 +4,7 @@
 #![feature(naked_functions)]
 
 use core::arch::asm;
+use core::arch::naked_asm;
 use core::mem::MaybeUninit;
 use core::ptr::write_volatile;
 use cortex_m::interrupt::free;
@@ -264,7 +265,7 @@ pub extern "C" fn SysTick() {
 pub extern "C" fn PendSV() {
     unsafe {
         // TODO: Replace disabling interrupts with BASEPRI adjustment
-        asm!(
+        naked_asm!(
             "cpsid     i",                    // Disable interrupts
             "mrs       r0, psp",              // Read PSP
             "mov       r1, lr",               // Save LR
@@ -282,7 +283,6 @@ pub extern "C" fn PendSV() {
             "msr       psp, r0",              // Write PSP
             "cpsie     i",                    // Enable interrupts
             "bx        r1",                   // Branch to next task
-            options(noreturn),
         );
     }
 }
