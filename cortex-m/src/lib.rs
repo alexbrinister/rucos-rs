@@ -11,7 +11,7 @@ use cortex_m::interrupt::free;
 use cortex_m::peripheral::{scb, syst::SystClkSource, SCB, SYST};
 use rucos::Kernel;
 
-const _TICK_RATE_HZ: u32 = 100;
+const _TICK_RATE_HZ: u32 = 10000;
 
 /// Kernel tick rate in hertz
 pub const TICK_RATE_HZ: u64 = _TICK_RATE_HZ as u64;
