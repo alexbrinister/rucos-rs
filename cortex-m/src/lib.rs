@@ -11,7 +11,7 @@ use cortex_m::interrupt::free;
 use cortex_m::peripheral::{scb, syst::SystClkSource, SCB, SYST};
 use rucos::Kernel;
 
-const _TICK_RATE_HZ: u32 = 1000;
+const _TICK_RATE_HZ: u32 = 100;
 
 /// Kernel tick rate in hertz
 pub const TICK_RATE_HZ: u64 = _TICK_RATE_HZ as u64;
@@ -260,11 +260,11 @@ pub extern "C" fn SysTick() {
 /// PendSV interrupt handler
 ///
 /// Context switch implementation
-//#[naked]
+#[naked]
 #[no_mangle]
 pub unsafe extern "C" fn PendSV() {
     // TODO: Replace disabling interrupts with BASEPRI adjustment
-    asm!(
+    naked_asm!(
         "cpsid     i",                    // Disable interrupts
         "mrs       r0, psp",              // Read PSP
         "mov       r1, lr",               // Save LR
@@ -282,7 +282,6 @@ pub unsafe extern "C" fn PendSV() {
         "msr       psp, r0",              // Write PSP
         "cpsie     i",                    // Enable interrupts
         "bx        r1",                   // Branch to next task
-        options(noreturn),
     );
 }
 
